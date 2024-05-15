@@ -1,0 +1,13 @@
+{
+    "name": "artem/crm",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Artem Kurta",
+            "email": "artemdog386@gmail.com"
+        }
+    ],
+    "require": {
+        "larapack/dd": "^1.1"
+    }
+}
