@@ -4,26 +4,27 @@ namespace Core\Routing;
 
 use Exception;
 
+
 class Router
 {
     private static array $routes;
 
-    public static function __callStatic (string $name, array $args){
+    public static function __callStatic(string $name, array $args) {
         $method = match($name) {
             'get' => HttpMethod::GET,
             'post' => HttpMethod::POST,
 
-            default => null
+            default => null,
         };
 
         if ($method) {
-            $route = new Route($method, $args[0], $args[1], $args[2]); //TODO: validate args
+            $route = new Route($method, $args[0], $args[1], $args[2]);  // TODO: validate args
             self::$routes[] = $route;
 
             return $route;
         }
 
-        throw new Exception("Invalid route ");
+        throw new Exception('Invalid route');                   // TODO: add custom exception
     }
 
     private function getUri(): string{
@@ -35,19 +36,18 @@ class Router
         return '';
     }
     public function run() {
-        $url = $this->getUri();
+        $uri = $this->getUri();
 
-        if (! $url) {
+        if (! $uri)
             header('Location: ' . HOME_PAGE);
-        }
 
         $method = $_SERVER['REQUEST_METHOD'];
 
         $args = [];
 
-        /**@var Route $route*/
+        /**@var Route $route */
         foreach (self::$routes as $route) {
-            if ($route->getHttpMethod()->value === $method && preg_match("~{$route->getPattern()}~", $url, $args)) {
+            if ($route->getHttpMethod()->value === $method && preg_match("~{$route->getPattern()}~", $uri, $args)) {
                 array_shift($args);
 
                 $route->setArgs($args);

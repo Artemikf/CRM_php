@@ -2,12 +2,18 @@
 
 namespace App\Controllers;
 
-class AuthController {
-    public function registration() {
-        dd('registration');
+class AuthController
+{
+    public function renderRegistration() {
+
+        require_once ROOT . '/App/views/auth/RegistrationView.php';
+
+
+
+
     }
 
-    public function signUp() {
-        dd('signUp');
+    public function registration() {
+        dd($_POST);
     }
 }
