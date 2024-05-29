@@ -16,42 +16,38 @@ abstract class Model
     protected array $data = [];
 
 
-    private function getBy(array $args = []): PDOStatement {
-        $sql = "SELECT * FROM {$this->table}";
+    private function getBy(array $args = []): PDOStatement
+    {
+        $sql = "SELECT * FROM $this->table";
 
         if ($args) {
             $conditions = array_map(fn($k) => "$k=:$k", array_keys($args));
 
-            $sql .= " WHERE " . implode(" AND ", $conditions) . ";";
-        }
-        else
+            $sql .= " WHERE " . implode(' AND ', $conditions) . ';';
+        } else {
             $sql .= ';';
+        }
 
         return DB::run($sql, $args);
     }
-
-    private function insertRow(array $data): void {
+    private function insertRow(): void
+    {
         $keys = array_intersect(array_keys($this->data), $this->fillable);
-        //$keys = array_filter(array_keys($this->data), fn ($k) => in_array($k, $this->fillable)); // воторой варриант предедыщей строчки
 
-        dd($keys);
+        // $keys = array_filter(array_keys($this->data), fn($k) => in_array($k, $this->fillable));
 
-        $keys = array_keys($this->data);
-
-        foreach ($this->required as $item) {
-            if (! in_array($item, $keys)) {
-                throw new Exception("Field `{$item}` is required");     // TODO: custom Exception
-            }
-        }
+        foreach ($this->required as $item)
+            if (! in_array($item, $keys))
+                throw new Exception("field $item is required"); // TODO: custom exception
 
         $sqlNames = implode(', ', $keys);
 
-        $placeholders = array_map(fn($k) => ":" . $k, $keys);
+        $placeholders = array_map(fn($k) => ':' . $k , $keys);
         $sqlValues = implode(', ', $placeholders);
 
         $sql = "INSERT INTO $this->table ($sqlNames) VALUES ($sqlValues);";
 
-        DB::run($sql, $this->data);
+        DB::run($sql, array_intersect_key($this->data, array_flip($keys)));
     }
 
     public function __get(string $property): mixed
@@ -67,14 +63,14 @@ abstract class Model
         $this->data[$property] = $value;
     }
 
-    public function save() {
+    public function save()
+    {
         $this->insertRow($this->data);
     }
 
-    public static function findOne(array $conditions) {
+    public static function findOne(array $conditions): ?Model {
         $modelClass = get_called_class();
         $model = new $modelClass();
-
 
         $model->data = $model->getBy($conditions)->fetch() ?: [];
 
@@ -83,19 +79,22 @@ abstract class Model
 
         return null;
     }
-
-    public static function create(array $data): Model{
+    public static function create(array $data): Model
+    {
         $modelClass = get_called_class();
         $model = new $modelClass();
 
-        foreach ($model->fillable as $property) {
+        foreach ($model->fillable as $property)
             if (array_key_exists($property, $data))
-                $model->$data[$property] = $data[$property];
-//            else
-//                $model->$data[$property] = null;
-        }
+                $model->data[$property] = $data[$property];
 
         return $model;
     }
+
+
+
+
+
+
 
 }
