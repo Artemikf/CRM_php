@@ -9,6 +9,7 @@ class Route
     private string $controllerClass;
     private string $actionMethod;
     private array $args = [];
+    private bool $withAuth = false;
 
     /**
      * @param HttpMethod $httpMethod
@@ -22,6 +23,12 @@ class Route
         $this->pattern = $pattern;
         $this->controllerClass = $controllerClass;
         $this->actionMethod = $actionMethod;
+    }
+
+    public function withAuth() {
+        $this->withAuth = true;
+
+        return $this;
     }
 
     /**

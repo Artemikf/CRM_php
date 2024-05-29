@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use Core\CookieManager;
 use Core\Tools;
 
 class AuthController
@@ -18,6 +19,9 @@ class AuthController
         }
 
         return $errors;
+    }
+    private function generateToken(): string {
+        return bin2hex(random_bytes(TOKEN_LENGTH));
     }
 
     public function renderRegistration()
@@ -83,8 +87,16 @@ class AuthController
                 return;
             }
 
+            $user->token = $this->generateToken();
 
+            $user->update();
+            //dd($user);
 
+            CookieManager::setUserCookie([
+                COOKIE_TOKEN_KEY  => $user->token,
+            ]);
+
+            header('Location: ' . HOME_PAGE);
         }
     }
 }
