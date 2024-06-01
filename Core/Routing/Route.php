@@ -2,6 +2,7 @@
 
 namespace Core\Routing;
 
+
 class Route
 {
     private HttpMethod $httpMethod;
@@ -25,7 +26,8 @@ class Route
         $this->actionMethod = $actionMethod;
     }
 
-    public function withAuth() {
+    public function withAuth()
+    {
         $this->withAuth = true;
 
         return $this;

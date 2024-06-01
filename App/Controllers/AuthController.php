@@ -20,7 +20,8 @@ class AuthController
 
         return $errors;
     }
-    private function generateToken(): string {
+    private function generateToken(): string
+    {
         return bin2hex(random_bytes(TOKEN_LENGTH));
     }
 
@@ -90,13 +91,18 @@ class AuthController
             $user->token = $this->generateToken();
 
             $user->update();
-            //dd($user);
 
             CookieManager::setUserCookie([
-                COOKIE_TOKEN_KEY  => $user->token,
+                COOKIE_TOKEN_KEY => $user->token,
             ]);
 
             header('Location: ' . HOME_PAGE);
         }
+    }
+
+    public function logout()
+    {
+        CookieManager::clearCookie([COOKIE_TOKEN_KEY]);
+        header('Location: /login');
     }
 }

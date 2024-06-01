@@ -53,7 +53,7 @@ abstract class Model
     {
         $data = array_intersect_key($this->data, array_flip($this->fillable));
 
-        $setters = array_map(fn($k) => "$k=:$k", array_keys($data));
+        $setters = array_map(fn($k) => "$k = :$k", array_keys($data));
 
         $sql = "UPDATE $this->table SET "
             . implode(', ', $setters)
@@ -61,8 +61,8 @@ abstract class Model
             . $this->data[$this->identity] . ';';
 
         DB::run($sql, $data);
-        //dd($sql);
     }
+
 
     public function __get(string $property): mixed
     {
@@ -76,13 +76,16 @@ abstract class Model
         $this->data[$property] = $value;
     }
 
+
     public function save()
     {
         $this->insertRow($this->data);
     }
-    public function update(){
+    public function update()
+    {
         $this->updateRow();
     }
+
 
     public static function findOne(array $conditions): ?Model {
         $modelClass = get_called_class();
@@ -122,8 +125,8 @@ abstract class Model
                 else
                     $m->data[$property] = null;
             }
+
             return $m;
         }, $dataArray);
-
     }
 }
