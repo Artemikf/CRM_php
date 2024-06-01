@@ -1,10 +1,17 @@
 <?php
 
+
 namespace App\Controllers;
+
+use App\Models\Worker;
 
 class WorkerController
 {
-    public function index(){
-        dd('workers index');
+    public function index()
+    {
+        $workers = Worker::all();
+
+
     }
+
 }

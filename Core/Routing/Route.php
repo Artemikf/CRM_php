@@ -32,6 +32,14 @@ class Route
     }
 
     /**
+     * @return bool
+     */
+    public function isWithAuth(): bool
+    {
+        return $this->withAuth;
+    }
+
+    /**
      * @return HttpMethod
      */
     public function getHttpMethod(): HttpMethod
